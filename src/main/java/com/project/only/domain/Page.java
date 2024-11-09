@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
@@ -12,6 +15,7 @@ import java.util.Date;
 @Builder
 @Getter
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 public class Page {
 
@@ -22,8 +26,10 @@ public class Page {
     @Lob
     private String content;
     @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
     private Date createDateTime;
     @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
     private Date updateDateTime;
 
     public void changeTitle(String title){

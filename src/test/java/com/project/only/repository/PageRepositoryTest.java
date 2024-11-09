@@ -44,6 +44,7 @@ public class PageRepositoryTest {
 
         assertThat(find).isNotNull();
         assertThat(find.getId()).isNotNull();
+        assertThat(find.getCreateDateTime()).isNotNull();
         assertThat(find).isEqualTo(result);
     }
 
@@ -61,7 +62,9 @@ public class PageRepositoryTest {
         //then
         assertThat(find.getTitle()).isEqualTo("titleChanged");
         assertThat(find.getContent()).isEqualTo("contentChanged");
+        assertThat(find.getUpdateDateTime()).isNotNull();
     }
+
 
     private Page page(){
         return Page.builder()
