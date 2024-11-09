@@ -16,19 +16,16 @@ public class PageRepositoryTest {
     @Autowired
     private PageRepository pageRepository;
 
+    private final String title = "testTitle";
+    private final String content = "testContent";
+
     @Test
     @DisplayName("페이지 저장 테스트")
     public void save(){
         //given
-        String title = "testTitle";
-        String content = "testContent";
-        Page page = Page.builder()
-                .title(title)
-                .content(content)
-                .build();
 
         //when
-        Page result = pageRepository.save(page);
+        Page result = pageRepository.save(page());
 
         //that
         assertThat(result.getId()).isNotNull();
@@ -40,15 +37,9 @@ public class PageRepositoryTest {
     @DisplayName("페이지 단일 조회 테스트")
     public void find(){
         //given
-        String title = "testTitle";
-        String content = "testContent";
-        Page page = Page.builder()
-                .title(title)
-                .content(content)
-                .build();
+        Page result = pageRepository.save(page());
 
         //when
-        Page result = pageRepository.save(page);
         Page find = pageRepository.find(result.getId());
 
         assertThat(find).isNotNull();
@@ -60,20 +51,22 @@ public class PageRepositoryTest {
     @DisplayName("페이지 수정 테스트")
     public void update(){
         //given
-        Page page = Page.builder()
-                .title("title")
-                .content("content")
-                .build();
-
-        pageRepository.save(page);
+        Page save = pageRepository.save(page());
 
         //when
-        page.changeTitle("titleChanged");
-        page.changeContent("contentChanged");
-        Page find = pageRepository.find(page.getId());
+        save.changeTitle("titleChanged");
+        save.changeContent("contentChanged");
+        Page find = pageRepository.find(save.getId());
 
         //then
         assertThat(find.getTitle()).isEqualTo("titleChanged");
         assertThat(find.getContent()).isEqualTo("contentChanged");
+    }
+
+    private Page page(){
+        return Page.builder()
+                .title(title)
+                .content(content)
+                .build();
     }
 }
