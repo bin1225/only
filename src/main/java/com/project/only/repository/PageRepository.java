@@ -16,7 +16,7 @@ public class PageRepository {
         return page;
     }
 
-    public Page find(Long id) {
+    public Page findOne(Long id) {
         return em.find(Page.class, id);
     }
 }

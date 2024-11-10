@@ -31,7 +31,7 @@ public class PageService {
 
 
     public PageResponse findPageById(Long id) {
-        Page save = pageRepository.find(id);
+        Page save = pageRepository.findOne(id);
 
         return PageResponse.builder()
                 .id(save.getId())

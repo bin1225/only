@@ -46,7 +46,7 @@ public class PageServiceTest {
     @DisplayName("아이디로 페이지 조회 테스트")
     public void findPageById(){
         //given
-        doReturn(page()).when(pageRepository).find(id);
+        doReturn(page()).when(pageRepository).findOne(id);
 
         //when
         PageResponse result = pageService.findPageById(id);

@@ -35,12 +35,12 @@ public class PageRepositoryTest {
 
     @Test
     @DisplayName("페이지 단일 조회 테스트")
-    public void find(){
+    public void findOne(){
         //given
         Page result = pageRepository.save(page());
 
         //when
-        Page find = pageRepository.find(result.getId());
+        Page find = pageRepository.findOne(result.getId());
 
         assertThat(find).isNotNull();
         assertThat(find.getId()).isNotNull();
@@ -57,7 +57,7 @@ public class PageRepositoryTest {
         //when
         save.changeTitle("titleChanged");
         save.changeContent("contentChanged");
-        Page find = pageRepository.find(save.getId());
+        Page find = pageRepository.findOne(save.getId());
 
         //then
         assertThat(find.getTitle()).isEqualTo("titleChanged");
