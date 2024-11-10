@@ -33,7 +33,8 @@ public class PageControllerTest {
     private Gson gson;
     private MockMvc mockMvc;
 
-
+    private final Long pageId = 100L;
+    private final Long diaryId = 1L;
     private final String title = "title";
     private final String content = "content";
 
@@ -62,17 +63,16 @@ public class PageControllerTest {
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8),PageResponse.class);
 
-        Assertions.assertThat(response.getId()).isNotNull();
+        Assertions.assertThat(response.getPageId()).isNotNull();
     }
 
     @Test void getPage() throws Exception{
         //given
-        Long id = 1L;
-        doReturn(pageResponse()).when(pageService).findPageById(id);
+        doReturn(pageResponse()).when(pageService).findPageById(pageId);
 
         //when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get("/only/page/{pageId}",id));
+                MockMvcRequestBuilders.get("/only/page/{pageId}",pageId));
 
         //then
         resultActions.andExpect(status().isOk());
@@ -86,12 +86,12 @@ public class PageControllerTest {
     }
 
     private PageRequest pageRequest(){
-        return new PageRequest(title, content);
+        return new PageRequest(diaryId, title, content);
     }
 
     private PageResponse pageResponse(){
         return PageResponse.builder()
-                .id(1L)
+                .pageId(pageId)
                 .title(title)
                 .content(content)
                 .build();

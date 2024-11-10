@@ -1,5 +1,6 @@
 package com.project.only.repository;
 
+import com.project.only.domain.Diary;
 import com.project.only.domain.Page;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ public class PageRepositoryTest {
 
         //that
         assertThat(result.getId()).isNotNull();
+        assertThat(result.getDiary().getId()).isNotNull();
         assertThat(result.getTitle()).isEqualTo(title);
         assertThat(result.getContent()).isEqualTo(content);
     }
@@ -44,6 +46,7 @@ public class PageRepositoryTest {
 
         assertThat(find).isNotNull();
         assertThat(find.getId()).isNotNull();
+        assertThat(find.getDiary().getId()).isNotNull();
         assertThat(find.getCreateDateTime()).isNotNull();
         assertThat(find).isEqualTo(result);
     }
@@ -65,9 +68,17 @@ public class PageRepositoryTest {
         assertThat(find.getUpdateDateTime()).isNotNull();
     }
 
+    private static Diary diary() {
+        return Diary.builder()
+                .id(1L)
+                .title("abc")
+                .subTitle("this is a sub title")
+                .build();
+    }
 
     private Page page(){
         return Page.builder()
+                .diary(diary())
                 .title(title)
                 .content(content)
                 .build();
