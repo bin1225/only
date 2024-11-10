@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
 public class PageRequest {
+    private final Long diaryId;
     private final String title;
     private final String content;
 }

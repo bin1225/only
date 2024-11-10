@@ -20,6 +20,7 @@ import java.util.Date;
 public class Page {
 
     @Id @GeneratedValue
+    @Column(name = "page_id")
     private Long id;
     @Column(length = 50)
     private String title;
@@ -31,6 +32,10 @@ public class Page {
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     private Date updateDateTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "diary_id")
+    private Diary diary;
 
     public void changeTitle(String title){
         this.title = title;

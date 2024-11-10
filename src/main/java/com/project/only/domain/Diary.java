@@ -1,12 +1,21 @@
 package com.project.only.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+@Entity
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Diary {
     @Id @GeneratedValue
-    private int id;
+    @Column(name = "diary_id")
+    private Long id;
     @Column(length = 50)
     private String title;
     @Column
@@ -15,4 +24,13 @@ public class Diary {
     private Date createDateTime;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDateTime;
+
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Page> pages = new ArrayList<>();
+
+    public Diary addPage(Page page){
+        pages.add(page);
+        return this;
+    }
 }

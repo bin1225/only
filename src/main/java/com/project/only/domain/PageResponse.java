@@ -10,7 +10,8 @@ import java.util.Date;
 @Builder
 @RequiredArgsConstructor
 public class PageResponse {
-    private final Long id;
+    private final Long pageId;
+    private final Long diaryId;
     private final String title;
     private final String content;
     private final Date createDateTime;
