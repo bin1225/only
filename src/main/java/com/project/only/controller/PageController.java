@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class PageController {
@@ -28,4 +30,14 @@ public class PageController {
                 .body(pageResponse);
     }
 
+    @GetMapping("/only/{diaryId}/page")
+    public ResponseEntity<List<PageResponse>> getAllPages(@PathVariable Long diaryId){
+        List<PageResponse> pageResponseList = pageService.findPagesOfDiary(diaryId)
+                .stream()
+                .map(PageResponse::of)
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(pageResponseList);
+    }
 }

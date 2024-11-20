@@ -9,6 +9,8 @@ import com.project.only.repository.PageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PageService {
@@ -37,15 +39,12 @@ public class PageService {
 
 
     public PageResponse findPageById(Long id) {
-        Page save = pageRepository.findOne(id);
+        Page page = pageRepository.findOne(id);
 
-        return PageResponse.builder()
-                .pageId(save.getId())
-                .diaryId(save.getDiary().getId())
-                .title(save.getTitle())
-                .content(save.getContent())
-                .createDateTime(save.getCreateDateTime())
-                .updateDateTime(save.getUpdateDateTime())
-                .build();
+        return PageResponse.of(page);
+    }
+
+    public List<Page> findPagesOfDiary(Long diaryId) {
+        return pageRepository.findAllByDiaryId(diaryId);
     }
 }

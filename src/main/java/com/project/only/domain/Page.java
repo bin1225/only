@@ -33,7 +33,7 @@ public class Page {
     @LastModifiedDate
     private Date updateDateTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "diary_id")
     private Diary diary;
 

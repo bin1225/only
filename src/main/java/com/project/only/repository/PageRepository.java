@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class PageRepository {
 
@@ -18,5 +20,12 @@ public class PageRepository {
 
     public Page findOne(Long id) {
         return em.find(Page.class, id);
+    }
+
+    public List<Page> findAllByDiaryId(Long diaryId) {
+        return em.createQuery("select p from Page p " +
+                        "where p.diary.id = :diaryId", Page.class)
+                .setParameter("diaryId",diaryId)
+                .getResultList();
     }
 }
