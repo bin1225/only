@@ -17,15 +17,15 @@ public class DiaryController {
 
     private final DiaryService diaryService;
 
-    @PostMapping("/only/diary/create")
-    public ResponseEntity<DiaryResponse> createDiary(@RequestParam Long memberId, @RequestBody DiaryRequest diaryRequest) {
+    @PostMapping("/only/{memberId}/diary")
+    public ResponseEntity<DiaryResponse> createDiary(@PathVariable Long memberId, @RequestBody DiaryRequest diaryRequest) {
         Diary diary = diaryService.createDiary(memberId, diaryRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body( DiaryResponse.of(diary));
     }
 
-    @GetMapping("/only/diary/get")
-    public ResponseEntity<List<DiaryResponse>> getDiary(@RequestParam Long memberId) {
+    @GetMapping("/only/{memberId}/diary")
+    public ResponseEntity<List<DiaryResponse>> getDiaries(@PathVariable Long memberId) {
         List<Diary> diaries = diaryService.getDiaries(memberId);
         List<DiaryResponse> diaryResponses = diaries.stream()
                 .map(DiaryResponse::of)

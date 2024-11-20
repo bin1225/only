@@ -50,10 +50,9 @@ public class DiaryControllerTest {
         doReturn(diary()).when(diaryService).createDiary(any(Long.class), any(DiaryRequest.class));
         //when
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post("/only/diary/create")
+                MockMvcRequestBuilders.post("/only/{memberId}/diary",memberId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(diaryRequest))
-                        .param("memberId", memberId.toString())
         );
 
         //then
