@@ -29,8 +29,18 @@ public class Diary {
     @Builder.Default
     private List<Page> pages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<MemberDiary> memberDiaries = new ArrayList<>();
+
     public Diary addPage(Page page){
         pages.add(page);
         return this;
+    }
+
+    public void setMember(MemberDiary memberDiary){
+        if(this.memberDiaries.size()<2){
+            this.memberDiaries.add(memberDiary);
+        }
     }
 }
