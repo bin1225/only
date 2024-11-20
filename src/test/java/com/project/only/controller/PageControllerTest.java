@@ -51,7 +51,7 @@ public class PageControllerTest {
 
         //when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post("/only/page/add")
+                MockMvcRequestBuilders.post("/only/page")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(pageRequest()))
         );

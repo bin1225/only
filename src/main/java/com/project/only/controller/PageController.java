@@ -14,7 +14,7 @@ public class PageController {
 
     private final PageService pageService;
 
-    @PostMapping("/only/page/add")
+    @PostMapping("/only/page")
     public ResponseEntity<PageResponse> addPage(@RequestBody PageRequest pageRequest) {
         final PageResponse pageResponse = pageService.savePage(pageRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
