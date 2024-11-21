@@ -1,11 +1,14 @@
 package com.project.only.controller;
 
 import com.google.gson.Gson;
+import com.project.only.domain.Diary;
+import com.project.only.domain.Page;
 import com.project.only.domain.PageRequest;
 import com.project.only.domain.PageResponse;
 import com.project.only.service.PageService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -45,9 +48,10 @@ public class PageControllerTest {
     }
 
     @Test
+    @DisplayName("페이지 추가 테스트")
     public void addPage() throws Exception {
         //given
-        doReturn(pageResponse()).when(pageService).savePage(any(PageRequest.class));
+        doReturn(page()).when(pageService).savePage(any(PageRequest.class));
 
         //when
         final ResultActions resultActions = mockMvc.perform(
@@ -66,9 +70,11 @@ public class PageControllerTest {
         Assertions.assertThat(response.getPageId()).isNotNull();
     }
 
-    @Test void getPage() throws Exception{
+    @Test
+    @DisplayName("단일 페이지 조회 테스트")
+    void getPage() throws Exception{
         //given
-        doReturn(pageResponse()).when(pageService).findPageById(pageId);
+        doReturn(page()).when(pageService).findPageById(pageId);
 
         //when
         final ResultActions resultActions = mockMvc.perform(
@@ -89,11 +95,20 @@ public class PageControllerTest {
         return new PageRequest(diaryId, title, content);
     }
 
-    private PageResponse pageResponse(){
-        return PageResponse.builder()
-                .pageId(pageId)
+    private Page page(){
+        return Page.builder()
+                .id(pageId)
                 .title(title)
                 .content(content)
+                .diary(diary())
+                .build();
+    }
+
+    private Diary diary() {
+        return Diary.builder()
+                .id(diaryId)
+                .title("abc")
+                .subTitle("this is a sub title")
                 .build();
     }
 }

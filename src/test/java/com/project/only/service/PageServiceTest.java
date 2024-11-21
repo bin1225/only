@@ -40,11 +40,11 @@ public class PageServiceTest {
         doReturn(diary()).when(diaryRepository).findOne(diaryId);
 
         //when
-        PageResponse result = pageService.savePage(new PageRequest(diaryId, title, content));
+        Page result = pageService.savePage(new PageRequest(diaryId, title, content));
 
         //then
-        Assertions.assertThat(result.getPageId()).isNotNull();
-        Assertions.assertThat(result.getDiaryId()).isNotNull();
+        Assertions.assertThat(result.getId()).isNotNull();
+        Assertions.assertThat(result.getDiary().getId()).isNotNull();
         Assertions.assertThat(result.getTitle()).isEqualTo(title);
         Assertions.assertThat(result.getContent()).isEqualTo(content);
     }
@@ -56,11 +56,11 @@ public class PageServiceTest {
         doReturn(page()).when(pageRepository).findOne(pageId);
 
         //when
-        PageResponse result = pageService.findPageById(pageId);
+        Page result = pageService.findPageById(pageId);
 
         //then
-        Assertions.assertThat(result.getPageId()).isNotNull();
-        Assertions.assertThat(result.getDiaryId()).isNotNull();
+        Assertions.assertThat(result.getId()).isNotNull();
+        Assertions.assertThat(result.getDiary().getId()).isNotNull();
         Assertions.assertThat(result.getTitle()).isEqualTo(title);
         Assertions.assertThat(result.getContent()).isEqualTo(content);
     }

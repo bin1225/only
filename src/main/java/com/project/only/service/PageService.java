@@ -18,30 +18,21 @@ public class PageService {
     private final PageRepository pageRepository;
     private final DiaryRepository diaryRepository;
 
-    public PageResponse savePage(PageRequest pageRequest) {
+    public Page savePage(PageRequest pageRequest) {
         Diary diary = diaryRepository.findOne(pageRequest.getDiaryId());
         Page page = Page.builder()
                 .title(pageRequest.getTitle())
                 .content(pageRequest.getContent())
                 .diary(diary)
                 .build();
-        Page save = pageRepository.save(page);
 
-        return PageResponse.builder()
-                .pageId(save.getId())
-                .diaryId(save.getDiary().getId())
-                .title(save.getTitle())
-                .content(save.getContent())
-                .createDateTime(save.getCreateDateTime())
-                .updateDateTime(save.getUpdateDateTime())
-                .build();
+        return pageRepository.save(page);
     }
 
 
-    public PageResponse findPageById(Long id) {
-        Page page = pageRepository.findOne(id);
+    public Page findPageById(Long id) {
+        return pageRepository.findOne(id);
 
-        return PageResponse.of(page);
     }
 
     public List<Page> findPagesOfDiary(Long diaryId) {

@@ -1,5 +1,6 @@
 package com.project.only.controller;
 
+import com.project.only.domain.Page;
 import com.project.only.domain.PageRequest;
 import com.project.only.domain.PageResponse;
 import com.project.only.service.PageService;
@@ -18,14 +19,18 @@ public class PageController {
 
     @PostMapping("/only/page")
     public ResponseEntity<PageResponse> addPage(@RequestBody PageRequest pageRequest) {
-        final PageResponse pageResponse = pageService.savePage(pageRequest);
+        Page page = pageService.savePage(pageRequest);
+        PageResponse pageResponse = PageResponse.of(page);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(pageResponse);
     }
 
     @GetMapping("/only/page/{pageId}")
     public ResponseEntity<PageResponse> getPage(@PathVariable Long pageId) {
-        final PageResponse pageResponse = pageService.findPageById(pageId);
+        Page page = pageService.findPageById(pageId);
+        PageResponse pageResponse = PageResponse.of(page);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(pageResponse);
     }
