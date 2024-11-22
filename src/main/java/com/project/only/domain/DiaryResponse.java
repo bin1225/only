@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -13,8 +13,8 @@ public class DiaryResponse {
     private final Long id;
     private final String title;
     private final String subTitle;
-    private final Date createDateTime;
-    private final Date updateDateTime;
+    private final LocalDateTime createDateTime;
+    private final LocalDateTime updateDateTime;
 
     public static DiaryResponse of(Diary diary) {
         return DiaryResponse.builder()

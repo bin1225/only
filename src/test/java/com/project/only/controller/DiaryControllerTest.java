@@ -1,6 +1,6 @@
 package com.project.only.controller;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.project.only.domain.Diary;
 import com.project.only.domain.DiaryRequest;
@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,15 @@ public class DiaryControllerTest {
 
     @BeforeEach
     void setUp() {
-        gson = new Gson();
+        gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                new JsonDeserializer<LocalDateTime>() {
+            @Override
+            public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                    throws JsonParseException {
+                return LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+            }
+        }).create();
+
         mockMvc = MockMvcBuilders.standaloneSetup(diaryController).build();
     }
 

@@ -9,7 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -28,10 +28,10 @@ public class Page {
     private String content;
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
-    private Date createDateTime;
+    private LocalDateTime createDateTime;
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
-    private Date updateDateTime;
+    private LocalDateTime updateDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "diary_id")

@@ -1,10 +1,7 @@
 package com.project.only.controller;
 
-import com.google.gson.Gson;
-import com.project.only.domain.Diary;
-import com.project.only.domain.Page;
-import com.project.only.domain.PageRequest;
-import com.project.only.domain.PageResponse;
+import com.google.gson.*;
+import com.project.only.domain.*;
 import com.project.only.service.PageService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +16,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -43,7 +43,14 @@ public class PageControllerTest {
 
     @BeforeEach
     void setUp() {
-        gson = new Gson();
+        gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class,
+                new JsonDeserializer<LocalDateTime>() {
+                    @Override
+                    public LocalDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                            throws JsonParseException {
+                        return LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+                    }
+                }).create();
         mockMvc = MockMvcBuilders.standaloneSetup(pageController).build();
     }
 
@@ -89,6 +96,23 @@ public class PageControllerTest {
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getTitle()).isEqualTo(title);
         Assertions.assertThat(response.getContent()).isEqualTo(content);
+    }
+
+    @Test
+    @DisplayName("작성 후 24시간 이내인 경우 페이지 수정 성공")
+    public void updatePageSuccess() throws Exception {
+        //given
+        doReturn(page()).when(pageService).updatePage(any(PageUpdateDTO.class));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post("/only/page/{pageId}", pageId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(pageRequest()))
+        );
+
+        //then
+        resultActions.andExpect(status().isOk());
     }
 
     private PageRequest pageRequest(){

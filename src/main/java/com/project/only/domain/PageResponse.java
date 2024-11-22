@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -14,8 +14,8 @@ public class PageResponse {
     private final Long diaryId;
     private final String title;
     private final String content;
-    private final Date createDateTime;
-    private final Date updateDateTime;
+    private final LocalDateTime createDateTime;
+    private final LocalDateTime updateDateTime;
 
     public static PageResponse of(Page page) {
         return PageResponse.builder()

@@ -3,8 +3,8 @@ package com.project.only.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -21,9 +21,9 @@ public class Diary {
     @Column
     private String subTitle;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createDateTime;
+    private LocalDateTime createDateTime;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updateDateTime;
+    private LocalDateTime updateDateTime;
 
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
     @Builder.Default
