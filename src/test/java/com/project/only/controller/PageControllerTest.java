@@ -2,6 +2,9 @@ package com.project.only.controller;
 
 import com.google.gson.*;
 import com.project.only.domain.*;
+import com.project.only.error.GlobalExceptionHandler;
+import com.project.only.error.PageErrorCode;
+import com.project.only.error.RestApiException;
 import com.project.only.service.PageService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +15,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -20,6 +24,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -51,7 +56,10 @@ public class PageControllerTest {
                         return LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
                     }
                 }).create();
-        mockMvc = MockMvcBuilders.standaloneSetup(pageController).build();
+
+        mockMvc = MockMvcBuilders.standaloneSetup(pageController)
+                .setControllerAdvice(GlobalExceptionHandler.class)
+                .build();
     }
 
     @Test
@@ -114,6 +122,30 @@ public class PageControllerTest {
         //then
         resultActions.andExpect(status().isOk());
     }
+
+    @Test
+    @DisplayName("작성 후 24시간 경과시 경우 페이지 수정 실패")
+    public void updatePageFail() throws Exception {
+        //given
+        doThrow(new RestApiException(PageErrorCode.LIMIT_TIME_PASSED)).when(pageService).updatePage(any(PageUpdateDTO.class));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post("/only/page/{pageId}", pageId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(pageRequest()))
+        );
+
+        //then
+        resultActions.andExpect(result -> Assertions.assertThat(getApiResultExceptionClass(result))
+                .isEqualTo(RestApiException.class))
+                .andExpect(status().isBadRequest());
+    }
+
+    private Class<? extends Exception> getApiResultExceptionClass(MvcResult result) {
+        return Objects.requireNonNull(result.getResolvedException()).getClass();
+    }
+
 
     private PageRequest pageRequest(){
         return new PageRequest(diaryId, title, content);

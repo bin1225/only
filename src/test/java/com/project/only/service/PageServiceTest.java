@@ -1,10 +1,9 @@
 package com.project.only.service;
 
 
-import com.project.only.domain.Diary;
-import com.project.only.domain.Page;
-import com.project.only.domain.PageRequest;
-import com.project.only.domain.PageResponse;
+import com.project.only.domain.*;
+import com.project.only.error.PageErrorCode;
+import com.project.only.error.RestApiException;
 import com.project.only.repository.DiaryRepository;
 import com.project.only.repository.PageRepository;
 import org.assertj.core.api.Assertions;
@@ -14,6 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
@@ -43,10 +45,10 @@ public class PageServiceTest {
         Page result = pageService.savePage(new PageRequest(diaryId, title, content));
 
         //then
-        Assertions.assertThat(result.getId()).isNotNull();
-        Assertions.assertThat(result.getDiary().getId()).isNotNull();
-        Assertions.assertThat(result.getTitle()).isEqualTo(title);
-        Assertions.assertThat(result.getContent()).isEqualTo(content);
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getDiary().getId()).isNotNull();
+        assertThat(result.getTitle()).isEqualTo(title);
+        assertThat(result.getContent()).isEqualTo(content);
     }
 
     @Test
@@ -59,12 +61,63 @@ public class PageServiceTest {
         Page result = pageService.findPageById(pageId);
 
         //then
-        Assertions.assertThat(result.getId()).isNotNull();
-        Assertions.assertThat(result.getDiary().getId()).isNotNull();
-        Assertions.assertThat(result.getTitle()).isEqualTo(title);
-        Assertions.assertThat(result.getContent()).isEqualTo(content);
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getDiary().getId()).isNotNull();
+        assertThat(result.getTitle()).isEqualTo(title);
+        assertThat(result.getContent()).isEqualTo(content);
     }
 
+    @Test
+    @DisplayName("작성 후 24시간 이내인 경우 페이지 수정 성공")
+    public void updatePageSuccess() throws Exception {
+        //given
+        Page page = Page.builder()
+                .id(pageId)
+                .createDateTime(LocalDateTime.now().minusHours(10))
+                .build();
+        doReturn(page).when(pageRepository).findOne(pageId);
+
+        PageUpdateDTO pageUpdateDTO = PageUpdateDTO.builder()
+                .pageId(page.getId())
+                .title("updated title")
+                .content("updated content")
+                .build();
+
+
+        //when
+        Page result = pageService.updatePage(pageUpdateDTO);
+
+        //then
+        assertThat(result.getId()).isNotNull();
+    }
+
+
+    @Test
+    @DisplayName("작성 후 24시간 후인 경우 페이지 수정 실패")
+    public void updatePageFail() throws Exception {
+        //given
+        Page page = Page.builder()
+                .id(pageId)
+                .createDateTime(LocalDateTime.now().minusHours(25))
+                .build();
+        doReturn(page).when(pageRepository).findOne(pageId);
+
+        PageUpdateDTO pageUpdateDTO = PageUpdateDTO.builder()
+                .pageId(page.getId())
+                .title("updated title")
+                .content("updated content")
+                .build();
+
+
+        //when
+        Throwable thrown = Assertions.catchThrowable(() -> pageService.updatePage(pageUpdateDTO));
+
+        //then
+        assertThat(thrown).isInstanceOf(RestApiException.class);
+
+        RestApiException restApiException = (RestApiException) thrown;
+        Assertions.assertThat(restApiException.getErrorCode()).isEqualTo(PageErrorCode.LIMIT_TIME_PASSED);
+    }
     private Page page(){
         return Page.builder()
                 .id(pageId)
