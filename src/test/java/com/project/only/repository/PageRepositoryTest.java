@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -52,6 +54,20 @@ public class PageRepositoryTest {
     }
 
     @Test
+    @DisplayName("일기장 페이지 목록 조회 테스트")
+    public void getPageListByDiaryId(){
+        //given
+        Page save = pageRepository.save(page());
+
+        //when
+        List<Page> pageList = pageRepository.findAllByDiaryId(save.getDiary().getId());
+
+        //then
+        assertThat(pageList).isNotNull();
+        assertThat(pageList.size()).isGreaterThan(0);
+    }
+
+    @Test
     @DisplayName("페이지 수정 테스트")
     public void update(){
         //given
@@ -68,9 +84,8 @@ public class PageRepositoryTest {
         assertThat(find.getUpdateDateTime()).isNotNull();
     }
 
-    private static Diary diary() {
+    private Diary diary() {
         return Diary.builder()
-                .id(1L)
                 .title("abc")
                 .subTitle("this is a sub title")
                 .build();
