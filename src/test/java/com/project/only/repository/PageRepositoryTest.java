@@ -52,6 +52,20 @@ public class PageRepositoryTest {
     }
 
     @Test
+    @DisplayName("일기장 페이지 목록 조회 테스트")
+    public void getPageListByDiaryId(){
+        //given
+        Page save = pageRepository.save(page());
+
+        //when
+        List<Page> pageList = pageRepository.findAllByDiaryId(save.getDiary().getId());
+
+        //then
+        assertThat(pageList).isNotNull();
+        assertThat(pageList.size()).isGreaterThan(0);
+    }
+
+    @Test
     @DisplayName("페이지 수정 테스트")
     public void update(){
         //given
