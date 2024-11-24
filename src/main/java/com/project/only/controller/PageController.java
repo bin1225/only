@@ -3,6 +3,7 @@ package com.project.only.controller;
 import com.project.only.domain.Page;
 import com.project.only.domain.PageRequest;
 import com.project.only.domain.PageResponse;
+import com.project.only.domain.PageUpdateDTO;
 import com.project.only.service.PageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,5 +45,19 @@ public class PageController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(pageResponseList);
+    }
+
+
+    @PostMapping("/only/page/{pageId}")
+    public ResponseEntity<PageResponse> updatePage(@PathVariable Long pageId, @RequestBody PageRequest pageRequest) {
+        Page page = pageService.updatePage(PageUpdateDTO.builder()
+                .pageId(pageId)
+                .title(pageRequest.getTitle())
+                .content(pageRequest.getContent())
+                .build());
+        PageResponse pageResponse = PageResponse.of(page);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(pageResponse);
     }
 }
